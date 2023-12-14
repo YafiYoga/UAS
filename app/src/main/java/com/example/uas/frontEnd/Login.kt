@@ -218,7 +218,7 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                             if(response.code() == 200){
                                 jwt = response.body()?.jwt!!
                                 preferencesManager.saveData("jwt", jwt)
-                                navController.navigate("register")
+                                navController.navigate("HomePageBarber")
                             }else if(response.code() == 400){
                                 print("error login")
                                 var toast = Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()

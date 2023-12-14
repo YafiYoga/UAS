@@ -88,7 +88,7 @@ fun SelamatDatang(
             Row {
                 CButton(text = "Pelanggan",
                     onClick = {
-                        navController.navigate("loginn")
+                        navController.navigate("HomePagePelanggan")
                     }
 
 
