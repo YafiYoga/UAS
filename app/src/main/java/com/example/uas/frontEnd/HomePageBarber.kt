@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
@@ -53,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -76,7 +78,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 fun HomePageBarber(navController: NavController, context: Context = LocalContext.current) {
     val baseColor = Color(0xFF6C3428)
     val Tambahlayanan = painterResource(id = R.drawable.layanan)
-         val DaftarBooking = painterResource(id = R.drawable.daftar)
+    val DaftarBooking = painterResource(id = R.drawable.daftar)
     val CekBooking = painterResource(id = R.drawable.cek)
     //var listUser: List<UserRespon> = remember
     var search by remember { mutableStateOf(TextFieldValue("")) }
@@ -121,11 +123,11 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Home Page", modifier = Modifier.padding(top = 5.dp), fontWeight = FontWeight.Bold, fontSize = 24.sp,
+                    Text(text = "HomePage ", modifier = Modifier.padding(top = 5.dp), fontWeight = FontWeight.Bold, fontSize = 24.sp,
                         fontFamily = AlegreyaSansFontFamily)
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
-                        navController.navigate("login")
+                        navController.navigate("Login")
                     }) {
                         Icon(
                             Icons.Default.ExitToApp,
@@ -140,6 +142,9 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
                 ),
             )
         },
+        bottomBar = {
+            BottomNavigasi(navController)
+        },
 
     ) { innerPadding ->
         Column(
@@ -151,114 +156,11 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            OutlinedTextField(
-                value = search,
-                onValueChange = { newText ->
-                    search = newText
-                },
-                label = { Text(text = "Search", fontFamily = AlegreyaSansFontFamily,color = Color(0xFF6C3428)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 6.dp),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        // Handle the search action
-                    }) {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = baseColor
-                        )
-                    }
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = baseColor,
-                    unfocusedBorderColor = Color.Gray,
-                    cursorColor = baseColor
-                )
-            )
 
 
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Box(
-                        modifier = Modifier
-                            .size(92.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(Color.LightGray),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = DaftarBooking,
-                            contentDescription = null,
-                            alignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(70.dp)
-                                .width(70.dp)
-                                .clickable { navController.navigate("DaftarBooking") }
-                        )
-                    }
 
-                    Text(text = "Daftar Booking", fontFamily = AlegreyaSansFontFamily,color = Color(0xFF6C3428) )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Box(
-                        modifier = Modifier
-                            .size(92.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(Color.LightGray),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = Tambahlayanan,
-                            contentDescription = null,
-                            alignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(60.dp)
-                                .width(60.dp)
-                                .clickable { navController.navigate("") }
-                        )
-                    }
-
-                    Text(text = "Tambah Layanan", fontFamily = AlegreyaSansFontFamily, color = Color(0xFF6C3428))
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Box(
-                        modifier = Modifier
-                            .size(92.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(Color.LightGray),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = CekBooking,
-                            contentDescription = null,
-                            alignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(70.dp)
-                                .width(70.dp)
-                                .clickable { navController.navigate("CekBooking") }
-                        )
-                    }
-
-                    Text(text = "CekBooking", fontFamily = AlegreyaSansFontFamily, color = Color(0xFF6C3428))
-                }
-            }
 
 
 
@@ -268,3 +170,53 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
     }
 }
 
+@Composable
+fun BottomNavigasi(navController: NavController) {
+
+
+        NavigationBar(
+            modifier = Modifier
+                .background(color = Color(0xFF6C3428))
+        )
+        {
+            val bottomNavigation = listOf(
+                BottomNavItem(
+                    label = "Home",
+                    icon = Icons.Default.Home,
+                    route = "homepage"
+                ),
+                BottomNavItem(
+                    label = "tambah layanan",
+                    icon = Icons.Default.AddCircle,
+                    route = "tambahlayanan"
+                ),
+                BottomNavItem(
+                    label = "Riwayat",
+                    icon = Icons.Default.DateRange,
+                    route = "DaftarBooking"
+                ),
+                BottomNavItem(
+                    label = "Profile",
+                    icon = Icons.Default.AccountCircle,
+                    route = "Barberprofile"
+                )
+            )
+            bottomNavigation.map {
+                NavigationBarItem(
+                    selected = it.label == bottomNavigation[0].label,
+                    onClick = {navController.navigate(it.route) },
+                    icon = { Icon(imageVector = it.icon, contentDescription = it.label, tint = Color(0xFF6C3428) ) },
+                    label = { Text(text = it.label,
+                        color = Color(0xFF6C3428),
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp, // Adjust the font size as needed
+                            fontFamily = AlegreyaSansFontFamily
+                            // Add other style parameters as needed
+                        )
+                    ) }
+                )
+            }
+
+        }
+    }

@@ -240,7 +240,6 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                         color = Color(0xFF6C3428)
                     )
                 }
-                Text(text = jwt)
                 TidakPunyaAkun(
                     onSignupTap = {
                         navController.navigate("Register")

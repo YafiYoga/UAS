@@ -21,11 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.uas.frontEnd.Barberprofile
 import com.example.uas.frontEnd.Login
 import com.example.uas.frontEnd.Register
 import com.example.uas.frontEnd.SelamatDatang
 import com.example.uas.frontEnd.HomePageBarber
 import com.example.uas.frontEnd.HomePagePelanggan
+import com.example.uas.frontEnd.TambahLayanan
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +60,12 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = "HomePagePelanggan") {
                     HomePagePelanggan(navController)
+                }
+                composable(route = "Barberprofile") {
+                    Barberprofile(navController)
+                }
+                composable(route = "TambahLayanan") {
+                    TambahLayanan(navController)
                 }
             }
         }
