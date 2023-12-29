@@ -79,14 +79,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TambahLayanan(navController: NavController, context: Context = LocalContext.current) {
+fun EditLayanan(navController: NavController, layananid : String?, NamaParameter: String?, HargaParameter: String?, DeskripsiParameter: String?, context: Context = LocalContext.current) {
     val baseColor = Color(0xFF6C3428)
-    val NamaLayanan = remember { mutableStateOf(TextFieldValue("")) }
-    val DeskripsiLayanan = remember { mutableStateOf(TextFieldValue("")) }
-    val Harga = remember { mutableStateOf(TextFieldValue("")) }
+    var NamaLayanan by remember { mutableStateOf(NamaParameter?:"") }
+    var DeskripsiLayanan by remember { mutableStateOf(HargaParameter?:"") }
+    var Harga by remember { mutableStateOf(DeskripsiParameter?:"") }
 
     val preferencesManager = remember { PreferencesManager(context = context) }
-    val layananId = preferencesManager.getData("layananID")
     val primaryColorOrg = Color(0xFFFF5F00)
 
     Scaffold(
@@ -94,7 +93,7 @@ fun TambahLayanan(navController: NavController, context: Context = LocalContext.
             TopAppBar(
                 title = {
                     Spacer(modifier = Modifier.height(24.dp))
-                    Text(text = "Tambah Layanan ", modifier = Modifier.padding(top = 8.dp), fontWeight = FontWeight.Bold, fontSize = 24.sp,
+                    Text(text = "Edit Layanan ", modifier = Modifier.padding(top = 8.dp), fontWeight = FontWeight.Bold, fontSize = 24.sp,
                         fontFamily = AlegreyaSansFontFamily)
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
@@ -107,10 +106,10 @@ fun TambahLayanan(navController: NavController, context: Context = LocalContext.
                         )
                     }
                 },
-                        colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = baseColor,
-                titleContentColor = Color.White,
-            ),
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = baseColor,
+                    titleContentColor = Color.White,
+                ),
             )
             Spacer(modifier = Modifier.height(24.dp))
         },
@@ -148,9 +147,9 @@ fun TambahLayanan(navController: NavController, context: Context = LocalContext.
                         .padding(horizontal = 16.dp, vertical = 2.dp)
                 )
                 OutlinedTextField(
-                    value = NamaLayanan.value,
-                    onValueChange = {
-                        NamaLayanan.value = it
+                    value = NamaLayanan,
+                    onValueChange = { newText ->
+                        NamaLayanan = newText
                     },
                     singleLine = true,
                     modifier = Modifier
@@ -162,87 +161,18 @@ fun TambahLayanan(navController: NavController, context: Context = LocalContext.
                             color = Color(0xFF6C3428),
                             shape = RoundedCornerShape(8.dp)
                         ),
-                    placeholder = {
-                        Text(
-                            text = "*Potong Rambut*",
-                            style = TextStyle(
-                                color = Color(0xFF6C3428),
-                                fontFamily = AlegreyaSansFontFamily,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight(500)
-                            )
-                        )
-                    },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color(0xFF6C3428),
                         focusedLabelColor = Color(0xFF6C3428),
                         textColor = Color(0xFF6C3428),
-                    )
                 )
-                Text(
-                    text = "*Deskripsi Layanan",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = AlegreyaSansFontFamily,
-                        color = Color(0xFF6C3428),
-                        textAlign = TextAlign.Center,
-                    ),
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(horizontal = 16.dp, vertical = 2.dp)
                 )
+
                 OutlinedTextField(
-                    value = DeskripsiLayanan.value,
-                    onValueChange = {
-                        DeskripsiLayanan.value = it
+                    value = DeskripsiLayanan,
+                    onValueChange = { newText ->
+                        DeskripsiLayanan = newText
                     },
-                    singleLine = false,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 2.dp)
-                        .border(
-                            width = 1.5.dp,
-                            color = Color(0xFF6C3428),
-                            shape = RoundedCornerShape(8.dp)
-                        ),
-                    placeholder = {
-                        Text(
-                            text = "*Bisa Memotong Rambut berbagai macam model rambut yang lagi trend*",
-                            style = TextStyle(
-                                color = Color(0xFF6C3428),
-                                fontFamily = AlegreyaSansFontFamily,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight(500)
-                            )
-                        )
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color(0xFF6C3428),
-                        focusedLabelColor = Color(0xFF6C3428),
-                        textColor = Color(0xFF6C3428),
-                    )
-                )
-                Text(
-                    text = "*Harga Layanan",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = AlegreyaSansFontFamily,
-                        color = Color(0xFF6C3428),
-                        textAlign = TextAlign.Center,
-                    ),
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(horizontal = 16.dp, vertical = 2.dp)
-                )
-                OutlinedTextField(
-                    value = Harga.value,
-                    onValueChange = {
-                        Harga.value = it
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
                     modifier = Modifier
                         .align(Alignment.Start)
@@ -253,23 +183,35 @@ fun TambahLayanan(navController: NavController, context: Context = LocalContext.
                             color = Color(0xFF6C3428),
                             shape = RoundedCornerShape(8.dp)
                         ),
-                    placeholder = {
-                        Text(
-                            text = "*10000*",
-                            style = TextStyle(
-                                color = Color(0xFF6C3428),
-                                fontFamily = AlegreyaSansFontFamily,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight(500)
-                            )
-                        )
-                    },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color(0xFF6C3428),
                         focusedLabelColor = Color(0xFF6C3428),
                         textColor = Color(0xFF6C3428),
                     )
                 )
+                OutlinedTextField(
+                    value = Harga,
+                    onValueChange = { newText ->
+                        Harga = newText
+                    },
+                    singleLine = true,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 2.dp)
+                        .border(
+                            width = 1.5.dp,
+                            color = Color(0xFF6C3428),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color(0xFF6C3428),
+                        focusedLabelColor = Color(0xFF6C3428),
+                        textColor = Color(0xFF6C3428),
+                    )
+                )
+
+
                 Spacer(modifier = Modifier.padding(10.dp))
 
                 ElevatedButton(
@@ -291,50 +233,36 @@ fun TambahLayanan(navController: NavController, context: Context = LocalContext.
                             .addConverterFactory(GsonConverterFactory.create())
                             .build()
                             .create(LayananService::class.java)
-                        try {
-                            val layananData = LayananDataWrapper(
-                                LayananData(
-                                    NamaLayanan.value.text,
-                                    DeskripsiLayanan.value.text,
-                                    Harga.value.text.toInt()
-                                )
-                            )
-                            val call = retrofit.createLayanan(layananData)
-                            call.enqueue(object : Callback<LayananRespon> {
-                                override fun onResponse(
-                                    call: Call<LayananRespon>,
-                                    response: Response<LayananRespon>
-                                ) {
-                                    print(response.code())
-                                    if (response.isSuccessful) {
-                                        navController.navigate("HomePageBarber")
-                                    } else {
-                                        print("error create")
-                                        var toast = Toast.makeText(
-                                            context,
-                                            "Error creating: ${response.errorBody()?.string()}",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
+                        val layananData = LayananDataWrapper(LayananData(NamaLayanan, DeskripsiLayanan, Harga.toInt()))
+                        val call = retrofit.save(layananid, layananData)
+                        call.enqueue(object : Callback<LayananRespon> {
+                            override fun onResponse(
+                                call: Call<LayananRespon>,
+                                response: Response<LayananRespon>
+                            ) {
+                                print(response.code())
+                                if (response.isSuccessful) {
+                                    navController.navigate("HomePageBarber")
+                                } else {
+                                    print("error update")
+                                    var toast = Toast.makeText(
+                                        context,
+                                        "Error updating: ${response.errorBody()?.string()}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
+                            }
 
-                                override fun onFailure(call: Call<LayananRespon>, t: Throwable) {
-                                    print(t.message)
-                                }
-                            })
-                        } catch (e: NumberFormatException) {
-                            Toast.makeText(
-                                context,
-                                "Error: Invalid price format",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
+                            override fun onFailure(call: Call<LayananRespon>, t: Throwable) {
+                                print(t.message)
+                            }
+
+                        })
                     },
                 )
                 {
                     Text(
-                        text = "Tambah Layanan",
+                        text = "Edit Layanan",
                         style = TextStyle(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,

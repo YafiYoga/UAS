@@ -61,6 +61,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.uas.BottommNavigasi
 import com.example.uas.PreferencesManager
 import com.example.uas.R
 import com.example.uas.respon.UserRespon
@@ -145,7 +146,7 @@ fun HomePagePelanggan(navController: NavController, context: Context = LocalCont
             )
         },
         bottomBar = {
-            BottomNavigation()
+            BottommNavigasi(navController)
         }
     ) { innerPadding ->
         Column(
@@ -301,40 +302,3 @@ fun HomePagePelanggan(navController: NavController, context: Context = LocalCont
         }
     }
 }
-
-@Composable
-fun BottomNavigation() {
-    NavigationBar {
-        val bottomNavigation = listOf(
-            BottomNavItem(
-                label = "Home",
-                icon = Icons.Default.Home,
-                route = "homepage"
-            ),
-            BottomNavItem(
-                label = "tambah layanan",
-                icon = Icons.Default.AddCircle,
-                route = "tambahlayanan"
-            ),
-            BottomNavItem(
-                label = "Daftar Booking",
-                icon = Icons.Default.List,
-                route = "DaftarBooking"
-            ),
-            BottomNavItem(
-                label = "Profile",
-                icon = Icons.Default.AccountCircle,
-                route = "profil"
-            )
-        )
-        bottomNavigation.map {
-            NavigationBarItem(
-                selected = it.label == bottomNavigation[0].label,
-                onClick = { },
-                icon = { Icon(imageVector = it.icon, contentDescription = it.label) },
-                label = {Text(text = it.label)}
-            )
-        }
-    }
-}
-data class BottomNavItem(val label: String, val icon: ImageVector, val route: String)

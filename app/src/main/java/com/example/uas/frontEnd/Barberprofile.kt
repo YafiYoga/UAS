@@ -3,6 +3,7 @@ package com.example.uas.frontEnd
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,14 +13,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -40,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.uas.BottomNavigasi
 import com.example.uas.PreferencesManager
 import com.example.uas.R
 import com.example.uas.ui.theme.AlegreyaSansFontFamily
@@ -70,17 +78,13 @@ fun Barberprofile (navController: NavController, context: Context = LocalContext
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = baseColor,
-                    titleContentColor = Color.White,
+                    titleContentColor = Color.White
                 ),
             )
             Spacer(modifier = Modifier.height(16.dp))
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navController.navigate("EditBooth")
-            }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
-            }
+        bottomBar = {
+            BottomNavigasi(navController)
         },
 
 
@@ -189,3 +193,4 @@ fun Barberprofile (navController: NavController, context: Context = LocalContext
 
         }
     }
+

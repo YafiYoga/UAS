@@ -201,45 +201,65 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                ElevatedButton(shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White
-                    ),onClick = {
-                    //navController.navigate("pagetwo")
-                    val retrofit = Retrofit.Builder()
-                        .baseUrl(baseUrl)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-                        .create(LoginService::class.java)
-                    val call = retrofit.getData(LoginData(username.text, password.text))
-                    call.enqueue(object : Callback<LoginRespon> {
-                        override fun onResponse(call: Call<LoginRespon>, response: Response<LoginRespon>) {
-                            print(response.code())
-                            if(response.code() == 200){
-                                jwt = response.body()?.jwt!!
-                                preferencesManager.saveData("jwt", jwt)
-                                navController.navigate("HomePageBarber")
-                            }else if(response.code() == 400){
-                                print("error login")
-                                var toast = Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()
+                Row {
+                    ElevatedButton(shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White
+                        ),onClick = {
+                        //navController.navigate("pagetwo")
+                        val retrofit = Retrofit.Builder()
+                            .baseUrl(baseUrl)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build()
+                            .create(LoginService::class.java)
+                        val call = retrofit.getData(LoginData(username.text, password.text))
+                        call.enqueue(object : Callback<LoginRespon> {
+                            override fun onResponse(call: Call<LoginRespon>, response: Response<LoginRespon>) {
+                                print(response.code())
+                                if(response.code() == 200){
+                                    jwt = response.body()?.jwt!!
+                                    preferencesManager.saveData("jwt", jwt)
+                                    navController.navigate("HomePageBarber")
+                                }else if(response.code() == 400){
+                                    print("error login")
+                                    var toast = Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()
 
+                                }
                             }
-                        }
 
-                        override fun onFailure(call: Call<LoginRespon>, t: Throwable) {
-                            print(t.message)
-                        }
+                            override fun onFailure(call: Call<LoginRespon>, t: Throwable) {
+                                print(t.message)
+                            }
 
-                    })
-                }) {
-                    Text(
-                        "Login",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight(500),
-                        fontFamily = AlegreyaSansFontFamily,
-                        color = Color(0xFF6C3428)
-                    )
+                        })
+                    }) {
+                        Text(
+                            "Login",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight(500),
+                            fontFamily = AlegreyaSansFontFamily,
+                            color = Color(0xFF6C3428)
+                        )
+                    }
+                    ElevatedButton(
+                        modifier = Modifier.padding(start = 5.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White
+                        ),onClick = {
+                            preferencesManager.saveData("jwt", "")
+                            navController.navigate("SelamatDatang")
+                        }) {
+                        Text(
+                            "Kembali",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight(500),
+                            fontFamily = AlegreyaSansFontFamily,
+                            color = Color(0xFF6C3428)
+                        )
+                    }
                 }
+
                 TidakPunyaAkun(
                     onSignupTap = {
                         navController.navigate("Register")

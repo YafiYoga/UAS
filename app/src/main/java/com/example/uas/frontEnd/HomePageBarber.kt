@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -24,12 +25,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,10 +66,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.uas.BottomNavigasi
 import com.example.uas.PreferencesManager
 import com.example.uas.R
+import com.example.uas.respon.LayananRespon
 import com.example.uas.respon.UserRespon
-import com.example.uas.service.UserService
+import com.example.uas.service.LayananService
+import com.example.uas.respon.layanan
 import com.example.uas.ui.theme.AlegreyaSansFontFamily
 import retrofit2.Call
 import retrofit2.Callback
@@ -83,7 +90,7 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
     //var listUser: List<UserRespon> = remember
     var search by remember { mutableStateOf(TextFieldValue("")) }
     val preferencesManager = remember { PreferencesManager(context = context) }
-    val listUser = remember { mutableStateListOf<UserRespon>() }
+    val listLayanan = remember { mutableStateListOf<LayananRespon>() }
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
     var baseUrl = "http://10.0.2.2:1337/api/"
     //var baseUrl = "http://10.217.17.11:1337/api/"
@@ -91,33 +98,32 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
         .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-        .create(UserService::class.java)
+        .create(LayananService::class.java)
     val call = retrofit.getData()
-    call.enqueue(object : Callback<List<UserRespon>> {
+    call.enqueue(object : Callback<layanan<List<LayananRespon>>> {
         override fun onResponse(
-            call: Call<List<UserRespon>>,
-            response: Response<List<UserRespon>>
+            call: Call<layanan<List<LayananRespon>>>,
+            response: Response<layanan<List<LayananRespon>>>
         ) {
-            if (response.code() == 200) {
-                //kosongkan list User terlebih dahulu
-                listUser.clear()
-                response.body()?.forEach { userRespon ->
-                    listUser.add(userRespon)
+            if (response.isSuccessful) {
+                listLayanan.clear()
+                response.body()?.data!!.forEach{ layananRespon : LayananRespon->
+                    listLayanan.add(layananRespon)
                 }
-            } else if (response.code() == 400) {
-                print("error login")
-                var toast = Toast.makeText(
+            } else {
+                print("Error getting data. Code: ${response.code()}")
+                Toast.makeText(
                     context,
-                    "Username atau password salah",
+                    "Error getting data. Code: ${response.code()}",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
 
-        override fun onFailure(call: Call<List<UserRespon>>, t: Throwable) {
+        override fun onFailure(call: Call<layanan<List<LayananRespon>>>, t: Throwable) {
             print(t.message)
+            Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
         }
-
     })
     Scaffold(
         topBar = {
@@ -151,10 +157,111 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(18.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            LazyColumn {
+                listLayanan?.forEach { layanan ->
+                    item {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 18.dp, bottom = 18.dp)
+                        ) {
+
+                            Column {
+                                Text(
+                                    text = layanan.attributes.NamaLayanan,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = AlegreyaSansFontFamily,
+                                    color = Color(0xFF6C3428)
+                                )
+
+                                Text(
+                                    text = "Rp " + layanan.attributes.Harga.toString(),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = AlegreyaSansFontFamily,
+                                    color = Color(0xFF6C3428)
+                                )
+                            }
+
+                            Column(modifier = Modifier.padding(top = 5.dp)) {
+                                Row {
+                                    IconButton(onClick = {
+                                        navController.navigate("EditLayanan/"
+                                                + layanan.id + "/"
+                                                + layanan.attributes.NamaLayanan + "/"
+                                                + layanan.attributes.DeskripsiLayanan + "/"
+                                                + layanan.attributes.Harga
+                                        )
+
+                                    }) {
+                                        Icon(
+                                            Icons.Default.Edit,
+                                            contentDescription = "Edit",
+                                            tint = Color(0xFF6C3428)
+                                        )
+                                    }
+
+                                    IconButton(onClick = {
+                                        val retrofit = Retrofit.Builder()
+                                            .baseUrl(baseUrl)
+                                            .addConverterFactory(GsonConverterFactory.create())
+                                            .build()
+                                            .create(LayananService::class.java)
+                                        val call = retrofit.delete(layanan.id)
+                                        call.enqueue(object : Callback<LayananRespon> {
+                                            override fun onResponse(
+                                                call: Call<LayananRespon>,
+                                                response: Response<LayananRespon>
+                                            ) {
+                                                print(response.code())
+                                                if (response.isSuccessful) {
+                                                    listLayanan.remove(layanan)
+                                                } else {
+                                                    print("error delete")
+                                                    var toast = Toast.makeText(
+                                                        context,
+                                                        "Error deleting: ${response.errorBody()?.string()}",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+                                                }
+                                            }
+
+                                            override fun onFailure(
+                                                call: Call<LayananRespon>,
+                                                t: Throwable
+                                            ) {
+                                                print(t.message)
+                                            }
+
+                                        })
+                                    }) {
+                                        Icon(
+                                            Icons.Default.Delete,
+                                            contentDescription = "Delete",
+                                            tint = Color(0xFF6C3428)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Divider(
+                            modifier = Modifier
+                            .fillMaxWidth()
+                            .height(3.dp)
+                            .background(Color(0xFF6C3428))
+                            .padding(vertical = 8.dp)
+                        )
+
+                    }
+                }
+            }
 
 
 
@@ -170,53 +277,4 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
     }
 }
 
-@Composable
-fun BottomNavigasi(navController: NavController) {
 
-
-        NavigationBar(
-            modifier = Modifier
-                .background(color = Color(0xFF6C3428))
-        )
-        {
-            val bottomNavigation = listOf(
-                BottomNavItem(
-                    label = "Home",
-                    icon = Icons.Default.Home,
-                    route = "homepage"
-                ),
-                BottomNavItem(
-                    label = "tambah layanan",
-                    icon = Icons.Default.AddCircle,
-                    route = "tambahlayanan"
-                ),
-                BottomNavItem(
-                    label = "Riwayat",
-                    icon = Icons.Default.DateRange,
-                    route = "DaftarBooking"
-                ),
-                BottomNavItem(
-                    label = "Profile",
-                    icon = Icons.Default.AccountCircle,
-                    route = "Barberprofile"
-                )
-            )
-            bottomNavigation.map {
-                NavigationBarItem(
-                    selected = it.label == bottomNavigation[0].label,
-                    onClick = {navController.navigate(it.route) },
-                    icon = { Icon(imageVector = it.icon, contentDescription = it.label, tint = Color(0xFF6C3428) ) },
-                    label = { Text(text = it.label,
-                        color = Color(0xFF6C3428),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp, // Adjust the font size as needed
-                            fontFamily = AlegreyaSansFontFamily
-                            // Add other style parameters as needed
-                        )
-                    ) }
-                )
-            }
-
-        }
-    }
