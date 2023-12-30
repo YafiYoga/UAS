@@ -2,7 +2,6 @@ package com.example.uas.frontEnd
 
 
 
-
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -12,24 +11,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -61,11 +68,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.uas.BottomNavigasi
 import com.example.uas.BottommNavigasi
 import com.example.uas.PreferencesManager
 import com.example.uas.R
+import com.example.uas.respon.LayananRespon
 import com.example.uas.respon.UserRespon
-import com.example.uas.service.UserService
+import com.example.uas.service.LayananService
+import com.example.uas.respon.layanan
 import com.example.uas.ui.theme.AlegreyaSansFontFamily
 import retrofit2.Call
 import retrofit2.Callback
@@ -77,16 +87,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Composable
 fun HomePagePelanggan(navController: NavController, context: Context = LocalContext.current) {
     val baseColor = Color(0xFF6C3428)
-    val cr1 = painterResource(id = R.drawable.logo3)
-    val cr2 = painterResource(id = R.drawable.logo3)
-    val cr3 = painterResource(id = R.drawable.logo3)
-    val konsul = painterResource(id = R.drawable.logo3)
-    val penitipan = painterResource(id = R.drawable.logo3)
-    val artikel = painterResource(id = R.drawable.logo3)
+    val Tambahlayanan = painterResource(id = R.drawable.layanan)
+    val DaftarBooking = painterResource(id = R.drawable.daftar)
+    val CekBooking = painterResource(id = R.drawable.cek)
     //var listUser: List<UserRespon> = remember
     var search by remember { mutableStateOf(TextFieldValue("")) }
     val preferencesManager = remember { PreferencesManager(context = context) }
-    val listUser = remember { mutableStateListOf<UserRespon>() }
+    val listLayanan = remember { mutableStateListOf<LayananRespon>() }
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
     var baseUrl = "http://10.0.2.2:1337/api/"
     //var baseUrl = "http://10.217.17.11:1337/api/"
@@ -94,43 +101,47 @@ fun HomePagePelanggan(navController: NavController, context: Context = LocalCont
         .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-        .create(UserService::class.java)
+        .create(LayananService::class.java)
     val call = retrofit.getData()
-    call.enqueue(object : Callback<List<UserRespon>> {
+    call.enqueue(object : Callback<layanan<List<LayananRespon>>> {
         override fun onResponse(
-            call: Call<List<UserRespon>>,
-            response: Response<List<UserRespon>>
+            call: Call<layanan<List<LayananRespon>>>,
+            response: Response<layanan<List<LayananRespon>>>
         ) {
-            if (response.code() == 200) {
-                //kosongkan list User terlebih dahulu
-                listUser.clear()
-                response.body()?.forEach { userRespon ->
-                    listUser.add(userRespon)
+            if (response.isSuccessful) {
+                listLayanan.clear()
+                response.body()?.data!!.forEach { layananRespon: LayananRespon ->
+                    listLayanan.add(layananRespon)
                 }
-            } else if (response.code() == 400) {
-                print("error login")
-                var toast = Toast.makeText(
+            } else {
+                print("Error getting data. Code: ${response.code()}")
+                Toast.makeText(
                     context,
-                    "Username atau password salah",
+                    "Error getting data. Code: ${response.code()}",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
 
-        override fun onFailure(call: Call<List<UserRespon>>, t: Throwable) {
+        override fun onFailure(call: Call<layanan<List<LayananRespon>>>, t: Throwable) {
             print(t.message)
+            Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
         }
-
     })
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Home Page", modifier = Modifier.padding(top = 5.dp), fontWeight = FontWeight.Bold, fontSize = 24.sp,
-                        fontFamily = AlegreyaSansFontFamily)
+                    Text(
+                        text = "HomePage ",
+                        modifier = Modifier.padding(top = 5.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        fontFamily = AlegreyaSansFontFamily
+                    )
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
-                        navController.navigate("login")
+                        navController.navigate("Login")
                     }) {
                         Icon(
                             Icons.Default.ExitToApp,
@@ -147,26 +158,25 @@ fun HomePagePelanggan(navController: NavController, context: Context = LocalCont
         },
         bottomBar = {
             BottommNavigasi(navController)
-        }
-    ) { innerPadding ->
+        },
+
+        ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(18.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             OutlinedTextField(
                 value = search,
                 onValueChange = { newText ->
                     search = newText
                 },
-                label = { Text(text = "Search", fontFamily = AlegreyaSansFontFamily,color = Color(0xFF6C3428)) },
+                shape = RoundedCornerShape(30.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 6.dp),
+                    .padding(bottom = 16.dp),
                 trailingIcon = {
                     IconButton(onClick = {
                         // Handle the search action
@@ -185,120 +195,66 @@ fun HomePagePelanggan(navController: NavController, context: Context = LocalCont
                 )
             )
 
-            Box {
-                Image(
-                    painter = cr1,
-                    contentDescription = null,
-                    alignment = Alignment.Center,
-                    modifier = Modifier
-                        .height(200.dp)
-                        .width(400.dp)
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Box(
-                        modifier = Modifier
-                            .size(92.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(Color.LightGray),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = konsul,
-                            contentDescription = null,
-                            alignment = Alignment.Center,
+            LazyColumn {
+                listLayanan?.forEach { layanan ->
+                    item {
+                        Row(
                             modifier = Modifier
-                                .height(70.dp)
-                                .width(70.dp)
-                                .clickable { navController.navigate("konsultasi") }
-                        )
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xFF6C3428))
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .clickable { navController.navigate("DetailLayanan/" + layanan.id + "/" + layanan.attributes.NamaLayanan + "/" + layanan.attributes.DeskripsiLayanan + "/" + layanan.attributes.Harga)}
+                                        .padding(16.dp), verticalAlignment = Alignment.CenterVertically
+
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.logo3),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(72.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                    )
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    Column(
+                                    ) {
+                                        Text(
+                                            text = layanan.attributes.NamaLayanan,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = AlegreyaSansFontFamily,
+                                            color = Color.White
+                                        )
+
+                                        Spacer(modifier = Modifier.height(4.dp))
+
+                                        Text(
+                                            text = "Rp " + layanan.attributes.Harga.toString(),
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = AlegreyaSansFontFamily,
+                                            color = Color.White
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
-
-                    Text(text = "Konsultasi", fontFamily = AlegreyaSansFontFamily,color = Color(0xFF6C3428) )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Box(
-                        modifier = Modifier
-                            .size(92.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(Color.LightGray),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = penitipan,
-                            contentDescription = null,
-                            alignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(60.dp)
-                                .width(60.dp)
-                                .clickable { navController.navigate("") }
-                        )
-                    }
-
-                    Text(text = "Penitipan", fontFamily = AlegreyaSansFontFamily, color = Color(0xFF6C3428))
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Box(
-                        modifier = Modifier
-                            .size(92.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(Color.LightGray),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = artikel,
-                            contentDescription = null,
-                            alignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(70.dp)
-                                .width(70.dp)
-                                .clickable { navController.navigate("artikel") }
-                        )
-                    }
-
-                    Text(text = "Artikel", fontFamily = AlegreyaSansFontFamily, color = Color(0xFF6C3428))
                 }
             }
-
-
-            Box {
-                Image(
-                    painter = cr2,
-                    contentDescription = null,
-                    alignment = Alignment.Center,
-                    modifier = Modifier
-                        .height(200.dp)
-                        .width(400.dp)
-                )
-            }
-
-            Box {
-                Image(
-                    painter = cr3,
-                    contentDescription = null,
-                    alignment = Alignment.Center,
-                    modifier = Modifier
-                        .height(200.dp)
-                        .width(400.dp)
-                )
-            }
-
         }
     }
 }
+
+

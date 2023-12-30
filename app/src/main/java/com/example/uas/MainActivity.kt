@@ -31,7 +31,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.uas.frontEnd.Barberprofile
+import com.example.uas.frontEnd.DetailLayanan
 import com.example.uas.frontEnd.EditLayanan
+import com.example.uas.frontEnd.HalamanRiwayatPelanggan
 import com.example.uas.frontEnd.Login
 import com.example.uas.frontEnd.Register
 import com.example.uas.frontEnd.SelamatDatang
@@ -87,6 +89,19 @@ class MainActivity : ComponentActivity() {
                         backStackEntry.arguments?.getString("DeskripsiLayanan"),
                         backStackEntry.arguments?.getString("Harga")
                     )
+                }
+                composable(
+                    route = "DetailLayanan/{layananid}/{NamaLayanan}/{DeskripsiLayanan}/{Harga}",
+                ) {backStackEntry ->
+                    DetailLayanan(navController,
+                        backStackEntry.arguments?.getString("layananid"),
+                        backStackEntry.arguments?.getString("NamaLayanan"),
+                        backStackEntry.arguments?.getString("DeskripsiLayanan"),
+                        backStackEntry.arguments?.getString("Harga")
+                    )
+                }
+                composable(route = "HalamanRiwayatPelanggan") {
+                    HalamanRiwayatPelanggan(navController)
                 }
             }
         }
@@ -157,23 +172,14 @@ fun BottommNavigasi(navController: NavController) {
             BottomNavItem(
                 label = "Home Page",
                 icon = Icons.Default.Home,
-                route = ""
+                route = "HomePagePelanggan"
             ),
             BottomNavItem(
-                label = "tambah layanan",
+                label = "transaksi",
                 icon = Icons.Default.AddCircle,
-                route = ""
+                route = "HalamanRiwayatPelanggan"
             ),
-            BottomNavItem(
-                label = "Riwayat",
-                icon = Icons.Default.DateRange,
-                route = ""
-            ),
-            BottomNavItem(
-                label = "Profile",
-                icon = Icons.Default.AccountCircle,
-                route = ""
-            )
+
         )
         bottomNavigation.map {
             NavigationBarItem(

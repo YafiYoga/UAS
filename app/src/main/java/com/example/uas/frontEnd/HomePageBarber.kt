@@ -107,7 +107,7 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
         ) {
             if (response.isSuccessful) {
                 listLayanan.clear()
-                response.body()?.data!!.forEach{ layananRespon : LayananRespon->
+                response.body()?.data!!.forEach { layananRespon: LayananRespon ->
                     listLayanan.add(layananRespon)
                 }
             } else {
@@ -129,8 +129,13 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "HomePage ", modifier = Modifier.padding(top = 5.dp), fontWeight = FontWeight.Bold, fontSize = 24.sp,
-                        fontFamily = AlegreyaSansFontFamily)
+                    Text(
+                        text = "HomePage ",
+                        modifier = Modifier.padding(top = 5.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        fontFamily = AlegreyaSansFontFamily
+                    )
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
                         navController.navigate("Login")
@@ -152,7 +157,7 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
             BottomNavigasi(navController)
         },
 
-    ) { innerPadding ->
+        ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -163,115 +168,131 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
             LazyColumn {
                 listLayanan?.forEach { layanan ->
                     item {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 18.dp, bottom = 18.dp)
+                                    .fillMaxWidth()
+                                .padding(16.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFF6C3428))
                         ) {
 
-                            Column {
-                                Text(
-                                    text = layanan.attributes.NamaLayanan,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = AlegreyaSansFontFamily,
-                                    color = Color(0xFF6C3428)
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 2.dp)
+                                    .padding(top = 18.dp, bottom = 18.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.logo3),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(72.dp)
+                                        .clip(RoundedCornerShape(8.dp))
                                 )
 
-                                Text(
-                                    text = "Rp " + layanan.attributes.Harga.toString(),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = AlegreyaSansFontFamily,
-                                    color = Color(0xFF6C3428)
-                                )
-                            }
+                                Column {
 
-                            Column(modifier = Modifier.padding(top = 5.dp)) {
-                                Row {
-                                    IconButton(onClick = {
-                                        navController.navigate("EditLayanan/"
-                                                + layanan.id + "/"
-                                                + layanan.attributes.NamaLayanan + "/"
-                                                + layanan.attributes.DeskripsiLayanan + "/"
-                                                + layanan.attributes.Harga
-                                        )
+                                    Text(
+                                        text = layanan.attributes.NamaLayanan,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = AlegreyaSansFontFamily,
+                                                color = Color.White
+                                    )
 
-                                    }) {
-                                        Icon(
-                                            Icons.Default.Edit,
-                                            contentDescription = "Edit",
-                                            tint = Color(0xFF6C3428)
-                                        )
-                                    }
 
-                                    IconButton(onClick = {
-                                        val retrofit = Retrofit.Builder()
-                                            .baseUrl(baseUrl)
-                                            .addConverterFactory(GsonConverterFactory.create())
-                                            .build()
-                                            .create(LayananService::class.java)
-                                        val call = retrofit.delete(layanan.id)
-                                        call.enqueue(object : Callback<LayananRespon> {
-                                            override fun onResponse(
-                                                call: Call<LayananRespon>,
-                                                response: Response<LayananRespon>
-                                            ) {
-                                                print(response.code())
-                                                if (response.isSuccessful) {
-                                                    listLayanan.remove(layanan)
-                                                } else {
-                                                    print("error delete")
-                                                    var toast = Toast.makeText(
-                                                        context,
-                                                        "Error deleting: ${response.errorBody()?.string()}",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-
-                                                }
-                                            }
-
-                                            override fun onFailure(
-                                                call: Call<LayananRespon>,
-                                                t: Throwable
-                                            ) {
-                                                print(t.message)
-                                            }
-
-                                        })
-                                    }) {
-                                        Icon(
-                                            Icons.Default.Delete,
-                                            contentDescription = "Delete",
-                                            tint = Color(0xFF6C3428)
-                                        )
-                                    }
+                                    Text(
+                                        text = "Rp " + layanan.attributes.Harga.toString(),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = AlegreyaSansFontFamily,
+                                                color = Color.White
+                                    )
                                 }
-                            }
-                        }
 
-                        Divider(
-                            modifier = Modifier
-                            .fillMaxWidth()
-                            .height(3.dp)
-                            .background(Color(0xFF6C3428))
-                            .padding(vertical = 8.dp)
-                        )
+                                Column(modifier = Modifier.padding(top = 5.dp)) {
+
+                                    Row {
+
+                                        IconButton(onClick = {
+                                            navController.navigate(
+                                                "EditLayanan/"
+                                                        + layanan.id + "/"
+                                                        + layanan.attributes.NamaLayanan + "/"
+                                                        + layanan.attributes.DeskripsiLayanan + "/"
+                                                        + layanan.attributes.Harga
+                                            )
+
+                                        }) {
+                                            Icon(
+                                                Icons.Default.Edit,
+                                                contentDescription = "Edit",
+                                                tint =  Color.White
+
+                                            )
+                                        }
+
+                                        IconButton(onClick = {
+                                            val retrofit = Retrofit.Builder()
+                                                .baseUrl(baseUrl)
+                                                .addConverterFactory(GsonConverterFactory.create())
+                                                .build()
+                                                .create(LayananService::class.java)
+                                            val call = retrofit.delete(layanan.id)
+                                            call.enqueue(object : Callback<LayananRespon> {
+                                                override fun onResponse(
+                                                    call: Call<LayananRespon>,
+                                                    response: Response<LayananRespon>
+                                                ) {
+                                                    print(response.code())
+                                                    if (response.isSuccessful) {
+                                                        listLayanan.remove(layanan)
+                                                    } else {
+                                                        print("error delete")
+                                                        var toast = Toast.makeText(
+                                                            context,
+                                                            "Error deleting: ${
+                                                                response.errorBody()?.string()
+                                                            }",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+
+                                                    }
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<LayananRespon>,
+                                                    t: Throwable
+                                                ) {
+                                                    print(t.message)
+                                                }
+
+                                            })
+                                        }) {
+                                            Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Delete",
+                                                tint =  Color.White,
+                                                modifier = Modifier.padding(end = 8.dp)
+                                            )
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+
+                        }
 
                     }
                 }
+
+
             }
-
-
-
-
-
-
-
-
-
-
 
         }
     }
