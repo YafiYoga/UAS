@@ -2,6 +2,7 @@ package com.example.uas.respon
 
 
 import com.google.gson.annotations.SerializedName
+import retrofit2.Call
 
 class PemesananRespon {
     @SerializedName("id")
@@ -15,10 +16,10 @@ class PemesananAttributes {
     var NamaPemesanan: String = ""
     @SerializedName("TglPemesanan")
     var TglPemesanan: String = ""
-    @SerializedName("layanan")
-    var pemesanan: pemesanan<PemesananRespon>? = null
     @SerializedName("JamPemesanan")
-    var JamPemesanan: Int = 0
+    var JamPemesanan: String = ""
+    @SerializedName("layanan")
+    val layanan: layanan<LayananRespon>? = null
     @SerializedName("createdAt")
     var createdAt: String = ""
     @SerializedName("updatedAt")

@@ -12,3 +12,4 @@ class UserRespon {
     var createdAt : String = ""
     var updatedAt: String = ""
 }
+

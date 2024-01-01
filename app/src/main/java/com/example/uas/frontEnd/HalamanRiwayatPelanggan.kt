@@ -6,7 +6,6 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,32 +14,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -57,25 +40,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.uas.BottomNavigasi
 import com.example.uas.BottommNavigasi
 import com.example.uas.PreferencesManager
 import com.example.uas.R
-import com.example.uas.respon.LayananRespon
 import com.example.uas.respon.PemesananRespon
-import com.example.uas.respon.UserRespon
-import com.example.uas.service.LayananService
 import com.example.uas.respon.layanan
 import com.example.uas.respon.pemesanan
 import com.example.uas.service.PemesananService
@@ -85,6 +60,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,8 +71,10 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
     val DaftarBooking = painterResource(id = R.drawable.daftar)
     val CekBooking = painterResource(id = R.drawable.cek)
     //var listUser: List<UserRespon> = remember
+
     var search by remember { mutableStateOf(TextFieldValue("")) }
-    val preferencesManager = remember { PreferencesManager(context = context) }
+    val preferencesManager = PreferencesManager(context) // Replace with the appropriate context
+    val layananId = preferencesManager.getData("layananId")
     val listPemesanan = remember { mutableStateListOf<PemesananRespon>() }
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
     var baseUrl = "http://10.0.2.2:1337/api/"
@@ -105,14 +84,12 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(PemesananService::class.java)
-    val call = retrofit.getData()
+    val call = retrofit.getData(search.text,"*")
     call.enqueue(object : Callback<pemesanan<List<PemesananRespon>>> {
         override fun onResponse(
             call: Call<pemesanan<List<PemesananRespon>>>,
             response: Response<pemesanan<List<PemesananRespon>>>
-        )
-
-        {
+        ) {
             if (response.isSuccessful) {
                 listPemesanan.clear()
                 response.body()?.data!!.forEach { PemesananRespon: PemesananRespon ->
@@ -128,9 +105,13 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
             }
         }
 
+
         override fun onFailure(call: Call<pemesanan<List<PemesananRespon>>>, t: Throwable) {
             print(t.message)
             Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+        }
+        fun HalamanRiwayatPelanggan() {
+            listPemesanan.clear()
         }
     })
     Scaffold(
@@ -138,7 +119,7 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
             TopAppBar(
                 title = {
                     Text(
-                        text = "HomePage ",
+                        text = "Halaman Transaksi ",
                         modifier = Modifier.padding(top = 5.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
@@ -175,13 +156,14 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
         ) {
             OutlinedTextField(
                 value = search,
-                onValueChange = { newText ->
-                    search = newText
+                onValueChange = {
+                    search = it
                 },
                 shape = RoundedCornerShape(30.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
+
                 trailingIcon = {
                     IconButton(onClick = {
                         // Handle the search action
@@ -189,17 +171,20 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
                         Icon(
                             Icons.Default.Search,
                             contentDescription = "Search",
-                            tint = baseColor
+                            tint = baseColor,
+
                         )
                     }
                 },
+                placeholder = { Text(text = "Pencarian......", color = baseColor) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = baseColor,
-                    unfocusedBorderColor = Color.Gray,
-                    cursorColor = baseColor
+                    unfocusedBorderColor = baseColor,
+                    cursorColor = baseColor,
+                    textColor = Color(0xFF6C3428),
                 )
-            )
 
+            )
             LazyColumn {
                 listPemesanan?.forEach { pemesanan ->
                     item {
@@ -211,7 +196,8 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+
+                                               .fillMaxWidth()
                                     .padding(16.dp)
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(Color(0xFF6C3428))
@@ -228,7 +214,6 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
                                             .size(72.dp)
                                             .clip(RoundedCornerShape(8.dp))
                                     )
-
                                     Spacer(modifier = Modifier.height(8.dp))
 
                                     Column(
@@ -236,21 +221,48 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
 
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = "Rp " + pemesanan.attributes.NamaPemesanan,
+                                            text =  "Nama Pemesan :  " + pemesanan.attributes.NamaPemesanan,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = AlegreyaSansFontFamily,
+                                            color = Color.White
+                                        )
+
+                                        val rawDate = pemesanan.attributes.TglPemesanan
+                                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                        val date = dateFormat.parse(pemesanan.attributes.TglPemesanan)
+                                        val indonesianLocale = Locale("id", "ID")
+                                        val formattedDate = SimpleDateFormat("EEEE, dd MMMM yyyy", indonesianLocale).format(date)
+
+                                        Text(
+                                            text = "Tgl Pemesanan :  " + formattedDate,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = AlegreyaSansFontFamily,
+                                            color = Color.White
+                                        )
+
+                                        val jamPemesanan = pemesanan.attributes.JamPemesanan
+                                        val timeParts = jamPemesanan.split(":")
+                                        val hours = timeParts[0].toInt()
+                                        val minutes = timeParts[1].toInt()
+                                        val formattedTime = String.format("%02d:%02d", hours, minutes)
+                                        Text(
+                                            text = "Jam Pemesanan :  " + formattedTime,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = AlegreyaSansFontFamily,
                                             color = Color.White
                                         )
                                         Text(
-                                            text = "Rp " + pemesanan.attributes.TglPemesanan,
+                                            text = "Nama Layanan: "+pemesanan.attributes.layanan?.data?.attributes!!.NamaLayanan,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = AlegreyaSansFontFamily,
                                             color = Color.White
                                         )
                                         Text(
-                                            text = "Rp " + pemesanan.attributes.JamPemesanan,
+                                            text = "Harga Layanan: "+pemesanan.attributes.layanan?.data?.attributes!!.Harga,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = AlegreyaSansFontFamily,

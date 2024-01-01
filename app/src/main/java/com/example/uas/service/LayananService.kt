@@ -10,6 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface LayananService {
     @POST("layanans")
@@ -19,7 +20,7 @@ interface LayananService {
     fun save(@Path("id") id: String?, @Body body: LayananDataWrapper): Call<LayananRespon>
 
     @GET("layanans")
-    fun getData(): Call<layanan<List<LayananRespon>>>
+    fun getData(@Query("filters[NamaLayanan][\$contains]") search: String?,@Query("populate") populate: String?): Call<layanan<List<LayananRespon>>>
 
     @DELETE("layanans/{id}")
     fun delete(@Path("id") id: Int): Call<LayananRespon>

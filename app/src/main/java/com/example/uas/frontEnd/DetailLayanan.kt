@@ -88,12 +88,14 @@ fun DetailLayanan(
     DeskripsiParameter: String?,
     HargaParameter: String?,
 
+
     context: Context = LocalContext.current
 ) {
     val baseColor = Color(0xFF6C3428)
     var NamaLayanan by remember { mutableStateOf(NamaParameter ?: "") }
     var DeskripsiLayanan by remember { mutableStateOf(DeskripsiParameter ?: "") }
     var Harga by remember { mutableStateOf(HargaParameter ?: "") }
+
 
 
 
@@ -303,7 +305,7 @@ fun DetailLayanan(
                     },
                     trailingIcon = {
                         Icon(Icons.Default.DateRange,
-                            "date picker",
+                            contentDescription  ="date picker",
                             Modifier.clickable { mDatePickerDialog.show() })
                     })
 
@@ -349,6 +351,7 @@ fun DetailLayanan(
                     trailingIcon = {
                         Icon(Icons.Default.Add,
                             "time picker",
+
                             Modifier.clickable { mTimePickerDialog.show() })
                     })
                 Spacer(modifier = Modifier.padding(10.dp))
@@ -390,7 +393,7 @@ fun DetailLayanan(
                                 print(response.code())
                                 if (response.isSuccessful) {
                                     val resp = response.body()
-                                    navController.navigate("HomePageBarber")
+                                    navController.navigate("HomePagePelanggan")
                                 } else {
                                     print("error create")
                                     var toast = Toast.makeText(

@@ -30,10 +30,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.uas.frontEnd.Barberprofile
 import com.example.uas.frontEnd.DetailLayanan
 import com.example.uas.frontEnd.EditLayanan
 import com.example.uas.frontEnd.HalamanRiwayatPelanggan
+import com.example.uas.frontEnd.HalamanTransaksiBarber
 import com.example.uas.frontEnd.Login
 import com.example.uas.frontEnd.Register
 import com.example.uas.frontEnd.SelamatDatang
@@ -74,9 +74,7 @@ class MainActivity : ComponentActivity() {
                 composable(route = "HomePagePelanggan") {
                     HomePagePelanggan(navController)
                 }
-                composable(route = "Barberprofile") {
-                    Barberprofile(navController)
-                }
+
                 composable(route = "TambahLayanan") {
                     TambahLayanan(navController)
                 }
@@ -102,6 +100,9 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = "HalamanRiwayatPelanggan") {
                     HalamanRiwayatPelanggan(navController)
+                }
+                composable(route = "HalamanTransaksiBarber") {
+                    HalamanTransaksiBarber(navController)
                 }
             }
         }
@@ -130,14 +131,10 @@ fun BottomNavigasi(navController: NavController) {
             ),
             BottomNavItem(
                 label = "Riwayat",
-                icon = Icons.Default.DateRange,
-                route = "DaftarBooking"
+                icon = Icons.Default.ShoppingCart,
+                route = "HalamanTransaksiBarber"
             ),
-            BottomNavItem(
-                label = "Profile",
-                icon = Icons.Default.AccountCircle,
-                route = "Barberprofile"
-            )
+
         )
         bottomNavigation.map {
             NavigationBarItem(
@@ -176,7 +173,7 @@ fun BottommNavigasi(navController: NavController) {
             ),
             BottomNavItem(
                 label = "transaksi",
-                icon = Icons.Default.AddCircle,
+                icon = Icons.Default.ShoppingCart,
                 route = "HalamanRiwayatPelanggan"
             ),
 

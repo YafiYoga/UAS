@@ -99,7 +99,7 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(LayananService::class.java)
-    val call = retrofit.getData()
+    val call = retrofit.getData(search.text,"*")
     call.enqueue(object : Callback<layanan<List<LayananRespon>>> {
         override fun onResponse(
             call: Call<layanan<List<LayananRespon>>>,
@@ -165,6 +165,34 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
                 .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            OutlinedTextField(
+                value = search,
+                onValueChange = {
+                    search = it
+                },
+                shape = RoundedCornerShape(30.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        // Handle the search action
+                    }) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = "Search",
+                            tint = baseColor
+                        )
+                    }
+                },
+                placeholder = { Text(text = "Pencarian......", color = baseColor) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = baseColor,
+                    unfocusedBorderColor = baseColor,
+                    cursorColor = baseColor,
+                    textColor = Color(0xFF6C3428),
+                )
+            )
             LazyColumn {
                 listLayanan?.forEach { layanan ->
                     item {
