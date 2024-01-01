@@ -213,10 +213,10 @@ fun HomePagePelanggan(navController: NavController, context: Context = LocalCont
                                     .padding(16.dp)
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(Color(0xFF6C3428))
+                                    .clickable { navController.navigate("DetailLayanan/" + layanan.id + "/" + layanan.attributes.NamaLayanan + "/" + layanan.attributes.DeskripsiLayanan + "/" + layanan.attributes.Harga)}
                             ) {
                                 Row(
                                     modifier = Modifier
-                                        .clickable { navController.navigate("DetailLayanan/" + layanan.id + "/" + layanan.attributes.NamaLayanan + "/" + layanan.attributes.DeskripsiLayanan + "/" + layanan.attributes.Harga)}
                                         .padding(16.dp), verticalAlignment = Alignment.CenterVertically
 
                                 ) {
