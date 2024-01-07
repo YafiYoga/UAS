@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -91,6 +92,7 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
     var search by remember { mutableStateOf(TextFieldValue("")) }
     val preferencesManager = remember { PreferencesManager(context = context) }
     val listLayanan = remember { mutableStateListOf<LayananRespon>() }
+
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
     var baseUrl = "http://10.0.2.2:1337/api/"
     //var baseUrl = "http://10.217.17.11:1337/api/"
@@ -127,16 +129,22 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
     })
     Scaffold(
         topBar = {
+
             TopAppBar(
                 title = {
                     Text(
-                        text = "HomePage ",
-                        modifier = Modifier.padding(top = 5.dp),
+                        text = "HomePage - ",
+                        modifier = Modifier.padding(top = 20.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
                         fontFamily = AlegreyaSansFontFamily
                     )
-                    IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(modifier = Modifier
+                        .padding(start = 320.dp)
+                        .padding(top = 22.dp)
+                      ,
+                        onClick = {
                         preferencesManager.saveData("jwt", "")
                         navController.navigate("Login")
                     }) {
@@ -146,7 +154,12 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
                             tint = Color.White
                         )
                     }
+
+
+
+
                 },
+
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = baseColor,
                     titleContentColor = Color.White,
@@ -165,6 +178,26 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
                 .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "User",
+                    tint = baseColor
+                )
+                Text(
+                    text = preferencesManager.getData("username"),
+                    color = baseColor,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = AlegreyaSansFontFamily,
+                    modifier = Modifier
+                        .padding(start = 9.dp)
+                )
+            }
+
             OutlinedTextField(
                 value = search,
                 onValueChange = {

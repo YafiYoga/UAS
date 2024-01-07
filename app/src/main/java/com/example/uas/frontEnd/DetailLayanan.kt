@@ -95,6 +95,7 @@ fun DetailLayanan(
     var NamaLayanan by remember { mutableStateOf(NamaParameter ?: "") }
     var DeskripsiLayanan by remember { mutableStateOf(DeskripsiParameter ?: "") }
     var Harga by remember { mutableStateOf(HargaParameter ?: "") }
+    var jwt by remember { mutableStateOf("") }
 
 
 
@@ -149,13 +150,14 @@ fun DetailLayanan(
     )
 
     Scaffold(
+
         topBar = {
             TopAppBar(
                 title = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { navController.navigate("Layanan") }) {
+                        IconButton(onClick = { navController.navigate("HomePagePelanggan") }) {
                             Icon(
                                 Icons.Default.ArrowBack,
                                 contentDescription = null,
@@ -392,7 +394,12 @@ fun DetailLayanan(
                             ) {
                                 print(response.code())
                                 if (response.isSuccessful) {
-                                    val resp = response.body()
+                                    preferencesManager.saveData("nama",NamaPemesan.value.text)
+                                    preferencesManager.saveData("Tgl",TglPemesanan)
+                                    preferencesManager.saveData("Jam",JamPemesanan)
+                                    preferencesManager.saveData("Namalayanan",NamaLayanan)
+                                    preferencesManager.saveData("Hargalayanan",Harga)
+
                                     navController.navigate("HomePagePelanggan")
                                 } else {
                                     print("error create")

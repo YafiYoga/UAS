@@ -219,6 +219,7 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                                 if(response.code() == 200){
                                     jwt = response.body()?.jwt!!
                                     preferencesManager.saveData("jwt", jwt)
+                                    preferencesManager.saveData("username", response.body()?.user!!.username)
                                     navController.navigate("HomePageBarber")
                                 }else if(response.code() == 400){
                                     print("error login")

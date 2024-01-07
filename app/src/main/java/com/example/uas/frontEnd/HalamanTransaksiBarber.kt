@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,6 +62,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,7 +125,7 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
                     )
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
-                        navController.navigate("HomePageBarber")
+                        navController.navigate("login")
                     }) {
                         Icon(
                             Icons.Default.ExitToApp,
@@ -149,6 +152,25 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
                 .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "User",
+                    tint = baseColor
+                )
+                Text(
+                    text = preferencesManager.getData("username"),
+                    color = baseColor,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = AlegreyaSansFontFamily,
+                    modifier = Modifier
+                        .padding(start = 9.dp)
+                )
+            }
             OutlinedTextField(
                 value = search,
                 onValueChange = {
@@ -198,7 +220,8 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
                                     modifier = Modifier
                                         .padding(16.dp), verticalAlignment = Alignment.CenterVertically
 
-                                ) {
+                                )
+                                {
                                     Image(
                                         painter = painterResource(id = R.drawable.logo3),
                                         contentDescription = null,
@@ -219,22 +242,27 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
                                             fontFamily = AlegreyaSansFontFamily,
                                             color = Color.White
                                         )
+                                        val rawDate = pemesanan.attributes.TglPemesanan
+                                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                        val date = dateFormat.parse(pemesanan.attributes.TglPemesanan)
+                                        val indonesianLocale = Locale("id", "ID")
+                                        val formattedDate = SimpleDateFormat("EEEE, dd MMMM yyyy", indonesianLocale).format(date)
+
                                         Text(
-                                            text = "Tgl Pemesanan :  " + pemesanan.attributes.TglPemesanan,
+                                            text = "Tgl Pemesanan :  " + formattedDate,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = AlegreyaSansFontFamily,
                                             color = Color.White
                                         )
+
+                                        val jamPemesanan = pemesanan.attributes.JamPemesanan
+                                        val timeParts = jamPemesanan.split(":")
+                                        val hours = timeParts[0].toInt()
+                                        val minutes = timeParts[1].toInt()
+                                        val formattedTime = String.format("%02d:%02d", hours, minutes)
                                         Text(
-                                            text = "Jam Pemesanan :  " + pemesanan.attributes.JamPemesanan,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = AlegreyaSansFontFamily,
-                                            color = Color.White
-                                        )
-                                        Text(
-                                            text = "Nama Layanan: "+pemesanan.attributes.layanan?.data?.attributes!!.NamaLayanan,
+                                            text = "Jam Pemesanan :  " + formattedTime,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = AlegreyaSansFontFamily,

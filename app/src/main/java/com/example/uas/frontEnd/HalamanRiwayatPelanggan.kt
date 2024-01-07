@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
@@ -67,9 +68,6 @@ import java.util.Locale
 @Composable
 fun HalamanRiwayatPelanggan(navController: NavController, context: Context = LocalContext.current) {
     val baseColor = Color(0xFF6C3428)
-    val Tambahlayanan = painterResource(id = R.drawable.layanan)
-    val DaftarBooking = painterResource(id = R.drawable.daftar)
-    val CekBooking = painterResource(id = R.drawable.cek)
     //var listUser: List<UserRespon> = remember
 
     var search by remember { mutableStateOf(TextFieldValue("")) }
@@ -77,43 +75,43 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
     val layananId = preferencesManager.getData("layananId")
     val listPemesanan = remember { mutableStateListOf<PemesananRespon>() }
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
-    var baseUrl = "http://10.0.2.2:1337/api/"
-    //var baseUrl = "http://10.217.17.11:1337/api/"
-    val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(PemesananService::class.java)
-    val call = retrofit.getData(search.text,"*")
-    call.enqueue(object : Callback<pemesanan<List<PemesananRespon>>> {
-        override fun onResponse(
-            call: Call<pemesanan<List<PemesananRespon>>>,
-            response: Response<pemesanan<List<PemesananRespon>>>
-        ) {
-            if (response.isSuccessful) {
-                listPemesanan.clear()
-                response.body()?.data!!.forEach { PemesananRespon: PemesananRespon ->
-                    listPemesanan.add(PemesananRespon)
-                }
-            } else {
-                print("Error getting data. Code: ${response.code()}")
-                Toast.makeText(
-                    context,
-                    "Error getting data. Code: ${response.code()}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-
-        override fun onFailure(call: Call<pemesanan<List<PemesananRespon>>>, t: Throwable) {
-            print(t.message)
-            Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-        }
-        fun HalamanRiwayatPelanggan() {
-            listPemesanan.clear()
-        }
-    })
+ var baseUrl = "http://10.0.2.2:1337/api/"
+//    //var baseUrl = "http://10.217.17.11:1337/api/"
+//    val retrofit = Retrofit.Builder()
+//        .baseUrl(baseUrl)
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
+//        .create(PemesananService::class.java)
+//    val call = retrofit.getData(search.text,"*")
+//    call.enqueue(object : Callback<pemesanan<List<PemesananRespon>>> {
+//        override fun onResponse(
+//            call: Call<pemesanan<List<PemesananRespon>>>,
+//            response: Response<pemesanan<List<PemesananRespon>>>
+//        ) {
+//            if (response.isSuccessful) {
+//                Pemesanan.clear()
+//                response.body()?.data!!.forEach { PemesananRespon: PemesananRespon ->
+//                    listPemesanan.add(PemesananRespon)
+//                }
+//            } else {
+//                print("Error getting data. Code: ${response.code()}")
+//                Toast.makeText(
+//                    context,
+//                    "Error getting data. Code: ${response.code()}",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//        }
+//
+//
+//        override fun onFailure(call: Call<pemesanan<List<PemesananRespon>>>, t: Throwable) {
+//            print(t.message)
+//            Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+//        }
+//        fun HalamanRiwayatPelanggan() {
+//            listPemesanan.clear()
+//        }
+//    })
     Scaffold(
         topBar = {
             TopAppBar(
@@ -126,8 +124,7 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
                         fontFamily = AlegreyaSansFontFamily
                     )
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
-                        preferencesManager.saveData("jwt", "")
-                        navController.navigate("Login")
+                        navController.navigate("SelamatDatang")
                     }) {
                         Icon(
                             Icons.Default.ExitToApp,
@@ -185,99 +182,99 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
                 )
 
             )
-            LazyColumn {
-                listPemesanan?.forEach { pemesanan ->
-                    item {
-                        Row(
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Box(
+                    modifier = Modifier
+
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFF6C3428))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(16.dp), verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo3),
+                            contentDescription = null,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .size(72.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Column(
                         ) {
-                            Box(
-                                modifier = Modifier
 
-                                               .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(Color(0xFF6C3428))
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .padding(16.dp), verticalAlignment = Alignment.CenterVertically
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text =  "Nama Pemesan :  "+preferencesManager.getData("nama"),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = AlegreyaSansFontFamily,
+                                color = Color.White
+                            )
 
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.logo3),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(72.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
+                            val rawDate = preferencesManager.getData("Tgl")
+                            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                            val date = dateFormat.parse(rawDate)
+                            val indonesianLocale = Locale("id", "ID")
+                            val formattedDate = SimpleDateFormat("EEEE, dd MMMM yyyy", indonesianLocale).format(date)
 
-                                    Column(
-                                    ) {
 
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        Text(
-                                            text =  "Nama Pemesan :  " + pemesanan.attributes.NamaPemesanan,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = AlegreyaSansFontFamily,
-                                            color = Color.White
-                                        )
+                            Text(
+                                text = "Tgl Pemesanan :  ${preferencesManager.getData("Tgl")}",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = AlegreyaSansFontFamily,
+                                color = Color.White
+                            )
 
-                                        val rawDate = pemesanan.attributes.TglPemesanan
-                                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                        val date = dateFormat.parse(pemesanan.attributes.TglPemesanan)
-                                        val indonesianLocale = Locale("id", "ID")
-                                        val formattedDate = SimpleDateFormat("EEEE, dd MMMM yyyy", indonesianLocale).format(date)
+                           // val jamPemesanan = pemesanan.attributes.JamPemesanan
+                          //  val timeParts = jamPemesanan.split(":")
+                          //  val hours = timeParts[0].toInt()
+                           // val minutes = timeParts[1].toInt()
+                           // val formattedTime = String.format("%02d:%02d", hours, minutes)
+                           // val timeFormat = SimpleDateFormat("HH:mm", Locale("id", "ID"))
+                            //val formattedTime = timeFormat.format(preferencesManager.getData("Jam"))
+                            val rawTime = preferencesManager.getData("Jam")
+                            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                            val formattedTime = timeFormat.format(timeFormat.parse(rawTime))
+                            Text(
+                                text = "Jam Pemesanan :  $formattedTime",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = AlegreyaSansFontFamily,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "Nama Layanan: "+preferencesManager.getData("Namalayanan"),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = AlegreyaSansFontFamily,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "Harga Layanan: "+preferencesManager.getData("Hargalayanan"),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = AlegreyaSansFontFamily,
+                                color = Color.White
+                            )
 
-                                        Text(
-                                            text = "Tgl Pemesanan :  " + formattedDate,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = AlegreyaSansFontFamily,
-                                            color = Color.White
-                                        )
-
-                                        val jamPemesanan = pemesanan.attributes.JamPemesanan
-                                        val timeParts = jamPemesanan.split(":")
-                                        val hours = timeParts[0].toInt()
-                                        val minutes = timeParts[1].toInt()
-                                        val formattedTime = String.format("%02d:%02d", hours, minutes)
-                                        Text(
-                                            text = "Jam Pemesanan :  " + formattedTime,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = AlegreyaSansFontFamily,
-                                            color = Color.White
-                                        )
-                                        Text(
-                                            text = "Nama Layanan: "+pemesanan.attributes.layanan?.data?.attributes!!.NamaLayanan,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = AlegreyaSansFontFamily,
-                                            color = Color.White
-                                        )
-                                        Text(
-                                            text = "Harga Layanan: "+pemesanan.attributes.layanan?.data?.attributes!!.Harga,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = AlegreyaSansFontFamily,
-                                            color = Color.White
-                                        )
-
-                                    }
-                                }
-                            }
                         }
+                    }
                     }
                 }
             }
         }
     }
-}
 
 

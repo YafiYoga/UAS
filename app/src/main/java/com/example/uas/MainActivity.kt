@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
                         backStackEntry.arguments?.getString("layananid"),
                         backStackEntry.arguments?.getString("NamaLayanan"),
                         backStackEntry.arguments?.getString("DeskripsiLayanan"),
-                        backStackEntry.arguments?.getString("Harga")
+                        backStackEntry.arguments?.getString("Harga"),
                     )
                 }
                 composable(route = "HalamanRiwayatPelanggan") {

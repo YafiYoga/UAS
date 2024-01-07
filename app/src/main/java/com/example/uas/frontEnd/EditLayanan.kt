@@ -75,7 +75,7 @@ fun EditLayanan(navController: NavController, layananid : String?, NamaParameter
                         fontFamily = AlegreyaSansFontFamily)
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
-                        navController.navigate("HomePageBarber")
+                        navController.navigate("login")
                     }) {
                         Icon(
                             Icons.Default.ExitToApp,
@@ -96,7 +96,7 @@ fun EditLayanan(navController: NavController, layananid : String?, NamaParameter
         },
 
 
-    )
+        )
 
     { innerPadding ->
         Spacer(modifier = Modifier.padding(16.dp))
@@ -143,7 +143,7 @@ fun EditLayanan(navController: NavController, layananid : String?, NamaParameter
                         focusedBorderColor = Color(0xFF6C3428),
                         focusedLabelColor = Color(0xFF6C3428),
                         textColor = Color(0xFF6C3428),
-                )
+                    )
                 )
 
                 OutlinedTextField(
@@ -254,6 +254,5 @@ fun EditLayanan(navController: NavController, layananid : String?, NamaParameter
         }
     }
 }
-
 
 

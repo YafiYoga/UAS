@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -98,7 +99,7 @@ fun TambahLayanan(navController: NavController, context: Context = LocalContext.
                         fontFamily = AlegreyaSansFontFamily)
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
-                        navController.navigate("HomePageBarber")
+                        navController.navigate("login")
                     }) {
                         Icon(
                             Icons.Default.ExitToApp,

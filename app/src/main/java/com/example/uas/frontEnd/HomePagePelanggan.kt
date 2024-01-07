@@ -141,7 +141,7 @@ fun HomePagePelanggan(navController: NavController, context: Context = LocalCont
                     )
                     IconButton(modifier = Modifier.padding(start = 320.dp), onClick = {
                         preferencesManager.saveData("jwt", "")
-                        navController.navigate("Login")
+                        navController.navigate("SelamatDatang")
                     }) {
                         Icon(
                             Icons.Default.ExitToApp,
