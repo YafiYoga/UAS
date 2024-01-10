@@ -133,16 +133,14 @@ fun HomePageBarber(navController: NavController, context: Context = LocalContext
             TopAppBar(
                 title = {
                     Text(
-                        text = "HomePage - ",
-                        modifier = Modifier.padding(top = 20.dp),
+                        text = "HomePage  ",
+                        modifier = Modifier.padding(top = 5.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
                         fontFamily = AlegreyaSansFontFamily
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
                     IconButton(modifier = Modifier
                         .padding(start = 320.dp)
-                        .padding(top = 22.dp)
                       ,
                         onClick = {
                         preferencesManager.saveData("jwt", "")

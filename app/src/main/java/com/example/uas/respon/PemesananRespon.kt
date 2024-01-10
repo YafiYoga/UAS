@@ -20,7 +20,6 @@ class PemesananAttributes {
     var JamPemesanan: String = ""
     @SerializedName("layanan")
     val layanan: layanan<LayananRespon>? = null
-
     @SerializedName("createdAt")
     var createdAt: String = ""
     @SerializedName("updatedAt")

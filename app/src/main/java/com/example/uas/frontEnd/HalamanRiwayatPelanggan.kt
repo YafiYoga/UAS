@@ -75,7 +75,7 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
     val layananId = preferencesManager.getData("layananId")
     val listPemesanan = remember { mutableStateListOf<PemesananRespon>() }
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
- var baseUrl = "http://10.0.2.2:1337/api/"
+ //var baseUrl = "http://10.0.2.2:1337/api/"
 //    //var baseUrl = "http://10.217.17.11:1337/api/"
 //    val retrofit = Retrofit.Builder()
 //        .baseUrl(baseUrl)
@@ -151,37 +151,6 @@ fun HalamanRiwayatPelanggan(navController: NavController, context: Context = Loc
                 .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
-                value = search,
-                onValueChange = {
-                    search = it
-                },
-                shape = RoundedCornerShape(30.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-
-                trailingIcon = {
-                    IconButton(onClick = {
-                        // Handle the search action
-                    }) {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = baseColor,
-
-                        )
-                    }
-                },
-                placeholder = { Text(text = "Pencarian......", color = baseColor) },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = baseColor,
-                    unfocusedBorderColor = baseColor,
-                    cursorColor = baseColor,
-                    textColor = Color(0xFF6C3428),
-                )
-
-            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

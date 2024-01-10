@@ -92,6 +92,7 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
             response: Response<pemesanan<List<PemesananRespon>>>
         ) {
             if (response.isSuccessful) {
+                val rp = response.body()
                 listPemesanan.clear()
                 response.body()?.data!!.forEach { PemesananRespon: PemesananRespon ->
                     listPemesanan.add(PemesananRespon)
@@ -152,25 +153,6 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
                 .padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "User",
-                    tint = baseColor
-                )
-                Text(
-                    text = preferencesManager.getData("username"),
-                    color = baseColor,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = AlegreyaSansFontFamily,
-                    modifier = Modifier
-                        .padding(start = 9.dp)
-                )
-            }
             OutlinedTextField(
                 value = search,
                 onValueChange = {
@@ -256,20 +238,27 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
                                             color = Color.White
                                         )
 
-                                        val jamPemesanan = pemesanan.attributes.JamPemesanan
+                                  val jamPemesanan = pemesanan.attributes.JamPemesanan
                                         val timeParts = jamPemesanan.split(":")
                                         val hours = timeParts[0].toInt()
                                         val minutes = timeParts[1].toInt()
                                         val formattedTime = String.format("%02d:%02d", hours, minutes)
+
                                         Text(
-                                            text = "Jam Pemesanan :  " + formattedTime,
+                                            text = "Jam Pemesanan :  " +formattedTime,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = AlegreyaSansFontFamily,
                                             color = Color.White
                                         )
                                         Text(
-                                            text = "Harga Layanan: "+pemesanan.attributes.layanan?.data?.attributes!!.Harga,
+                                            text = "Nama Layanan: ${pemesanan.attributes.layanan?.data?.attributes?.NamaLayanan}",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = AlegreyaSansFontFamily,
+                                            color = Color.White
+                                        )
+                                        Text(text = "Harga Layanan: ${pemesanan.attributes.layanan?.data?.attributes?.Harga}",
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.Bold,
                                             fontFamily = AlegreyaSansFontFamily,
@@ -286,5 +275,4 @@ fun HalamanTransaksiBarber(navController: NavController, context: Context = Loca
         }
     }
 }
-
 
